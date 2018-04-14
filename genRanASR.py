@@ -4,7 +4,7 @@ import sys
 import termios
 from sys import exit
 from random import randint
-import speech_recognition as speech_recognition
+import speech_recognition as sr
 
 r = sr.Recognizer()
 orig_settings = termios.tcgetattr(sys.stdin)
@@ -35,31 +35,33 @@ while True:
 		x=sys.stdin.read(1)[0]
 		if x == chr(27):
 			print()
-			print('Time used', (time.time() - start_time) // 60 ,'minutes', round((time.time() - start_time) % 60, 1), 'seconds')
+			print('Time used', (time.time() - start_time) // 60 ,'minutes', round((time.time() - start_time) % 60, 2), 'seconds')
 			print('You played', len(process_times), 'problems')
 			if len(process_times) > 0:
-				print('Average time per problem =', sum(process_times) / len(process_times), 'seconds')
+				print('Average time per problem =', round(sum(process_times) / len(process_times),2), 'seconds')
 			exit(0)
 	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
 	
 	r = sr.Recognizer()
 	with sr.Microphone() as source:
   		audio = r.listen(source)
-  	
-  	try:
-  		ans = r.recognize_google(audio,language = "th-TH")
-  		print("You said " + ans)
-  	except sr.RequestError as e:
-  		print("Could not understand audio")
+	try:
+		ans = r.recognize_google(audio,language = "th-TH")
+		print("You answered " + ans)
+	except sr.RequestError as e:
+		print("Could not understand audio")
 
 	process_times.append(time.time() - start_time)
 	answer = (a * 10 + b) * (c * 10 + d)
 	print('answer =', answer)
 	print('--' * 10)
 
-	if int(ans.replace(' ', '')) == answer:
-		print('Your answer is correct!')
-	else:
-		print('Your answer is incorrect or I cannot recognize your voice TT')
-	
+	try:
+		if int(ans.replace(' ', '')) == answer:
+			print('Your answer is correct!')
+		else:
+			print('Your answer is incorrect TT')
+	except:
+		print('I cannot recognize your answer as a number')
+
 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
