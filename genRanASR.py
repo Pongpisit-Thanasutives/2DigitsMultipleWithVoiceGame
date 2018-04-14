@@ -12,9 +12,10 @@ print('Start the game !')
 print()
 process_times = []
 start_time = time.time()
+corr = 0
+gameStatus = False
 
 while True:
-
 	a = randint(1, 9)
 	b = randint(0, 9)
 	c = randint(1, 9)
@@ -34,34 +35,43 @@ while True:
 	while x != chr(32):
 		x=sys.stdin.read(1)[0]
 		if x == chr(27):
-			print()
-			print('Time used', (time.time() - start_time) // 60 ,'minutes', round((time.time() - start_time) % 60, 2), 'seconds')
-			print('You played', len(process_times), 'problems')
-			if len(process_times) > 0:
-				print('Average time per problem =', round(sum(process_times) / len(process_times),2), 'seconds')
-			exit(0)
+			gameStatus = True
+			break
+	if gameStatus:break
+
 	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
 	
 	r = sr.Recognizer()
 	with sr.Microphone() as source:
   		audio = r.listen(source)
+
 	try:
+		answer = (a * 10 + b) * (c * 10 + d)
 		ans = r.recognize_google(audio,language = "th-TH")
+		print()
 		print("You answered " + ans)
+		
+		try:
+			if int(ans.replace(' ', '')) == answer:
+				print('Your answer is correct!')
+				corr += 1
+			else:
+				print('Your answer is incorrect TT')
+		except:
+			pass
+
 	except sr.RequestError as e:
 		print("Could not understand audio")
+		print("Please check the answer yourself")
 
 	process_times.append(time.time() - start_time)
-	answer = (a * 10 + b) * (c * 10 + d)
 	print('answer =', answer)
 	print('--' * 10)
 
-	try:
-		if int(ans.replace(' ', '')) == answer:
-			print('Your answer is correct!')
-		else:
-			print('Your answer is incorrect TT')
-	except:
-		print('I cannot recognize your answer as a number')
-
 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
+
+print()
+print('Time used', (time.time() - start_time) // 60 ,'minutes', round((time.time() - start_time) % 60, 2), 'seconds')
+print('You scored', corr, 'out of', len(process_times), 'problems')
+if len(process_times) > 0:
+	print('Average time per problem =', round(sum(process_times) / len(process_times),2), 'seconds')
