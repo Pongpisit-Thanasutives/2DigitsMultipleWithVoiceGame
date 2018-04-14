@@ -4,7 +4,7 @@ import sys
 import termios
 from sys import exit
 from random import randint
-import speech_recognition as sr
+import speech_recognition as speech_recognition
 
 r = sr.Recognizer()
 orig_settings = termios.tcgetattr(sys.stdin)
@@ -52,7 +52,7 @@ while True:
   	except sr.RequestError as e:
   		print("Could not understand audio")
 
-	process_times.append(time().time() - start_time)
+	process_times.append(time.time() - start_time)
 	answer = (a * 10 + b) * (c * 10 + d)
 	print('answer =', answer)
 	print('--' * 10)
