@@ -59,10 +59,9 @@ while True:
 				print('Your answer is incorrect TT')
 		except:
 			pass
-
-	except sr.RequestError as e:
+	except:
 		print("Could not understand audio")
-		print("Please check the answer yourself")
+		print("Please check the answer yourself")		
 
 	process_times.append(time.time() - start_time)
 	print('answer =', answer)
