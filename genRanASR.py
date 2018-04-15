@@ -52,7 +52,7 @@ while True:
 		print("You answered " + ans)
 		
 		try:
-			if int(ans.replace(' ', '')) == answer:
+			if int(ans.replace(' ', '').replace('Fun', '1')) == answer:
 				print('Your answer is correct!')
 				corr += 1
 			else:
